@@ -44,6 +44,25 @@ const Discount = styled.div`
   color: var(--color-green-700);
 `;
 
+const Button = styled.button`
+  font-family: 'Sono';
+  font-size: 1.4rem;
+  font-weight: 500;
+  padding: 0.5rem 0.3rem;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  background-color: var(--color-brand-600);
+  color: var(--color-grey-0);
+
+  &:hover {
+    transform: translateY(-3px);
+  }
+
+  &:active {
+    transform: translateY(-1px);
+  }
+`;
+
 const CabinRow = ({ cabin }) => {
   const {
     id: cabinID,
@@ -75,9 +94,9 @@ const CabinRow = ({ cabin }) => {
       <Price>{formatCurrency(regularPrice)}</Price>
       <Discount>{formatCurrency(discount)}</Discount>
 
-      <button onClick={() => mutate(cabinID)} disabled={isDeleting}>
+      <Button onClick={() => mutate(cabinID)} disabled={isDeleting}>
         Delete
-      </button>
+      </Button>
     </TableRow>
   );
 };
