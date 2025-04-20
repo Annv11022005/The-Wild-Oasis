@@ -2,11 +2,11 @@
 
 This is a project in the course.
 
-## ▶️ Khởi chạy dự án
+## ▶️ project launch
 
 ```bash
 git clone https://github.com/Annv11022005/The-Wild-Oasis
-cd cabin-booking-app
+cd The-Wild-Oasis
 npm install
 npm start
 ```
