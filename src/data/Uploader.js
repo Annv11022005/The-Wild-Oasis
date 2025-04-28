@@ -1,9 +1,8 @@
-import { useState } from 'react';
 import { isFuture, isPast, isToday } from 'date-fns';
-import supabase from '../services/supabase';
-import Button from '../ui/Button';
-import { subtractDates } from '../utils/helpers';
-
+import { useState } from 'react';
+import supabase from 'services/supabase';
+import Button from 'ui/Button';
+import { subtractDates } from 'utils/helpers';
 import { bookings } from './data-bookings';
 import { cabins } from './data-cabins';
 import { guests } from './data-guests';
@@ -100,7 +99,7 @@ async function createBookings() {
   if (error) console.log(error.message);
 }
 
-function Uploader() {
+export function Uploader() {
   const [isLoading, setIsLoading] = useState(false);
 
   async function uploadAll() {
@@ -133,22 +132,27 @@ function Uploader() {
         padding: '8px',
         borderRadius: '5px',
         textAlign: 'center',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '8px',
       }}
     >
-      <h3>SAMPLE DATA</h3>
+      <h3>DEV AREA</h3>
 
-      <Button onClick={uploadAll} disabled={isLoading}>
-        Upload ALL
+      <Button
+        onClick={uploadAll}
+        // To prevent accidental clicks. Remove to run once!
+        disabled={isLoading}
+        // disabled={true}
+      >
+        Upload ALL sample data
       </Button>
-
+      <p>Only run this only once!</p>
+      <p>
+        <em>(Cabin images need to be uploaded manually)</em>
+      </p>
+      <hr />
       <Button onClick={uploadBookings} disabled={isLoading}>
-        Upload bookings ONLY
+        Upload CURRENT bookings
       </Button>
+      <p>You can run this every day you develop the app</p>
     </div>
   );
 }
-
-export default Uploader;

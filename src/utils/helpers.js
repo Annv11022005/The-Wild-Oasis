@@ -1,7 +1,7 @@
 import { formatDistance, parseISO } from 'date-fns';
 import { differenceInDays } from 'date-fns';
 
-// Chúng tôi muốn làm cho chức năng này hoạt động cho cả đối tượng Date và chuỗi (có nguồn gốc từ Supabase)
+// We want to make this function work for both Date objects and strings (which come from Supabase)
 export const subtractDates = (dateStr1, dateStr2) =>
   differenceInDays(parseISO(String(dateStr1)), parseISO(String(dateStr2)));
 
@@ -12,13 +12,13 @@ export const formatDistanceFromNow = (dateStr) =>
     .replace('about ', '')
     .replace('in', 'In');
 
-// Supabase cần một chuỗi ngày ISO. Tuy nhiên, chuỗi đó sẽ khác nhau ở mỗi lần kết xuất vì MS hoặc SEC đã thay đổi, điều này không tốt. Vì vậy, chúng tôi sử dụng thủ thuật này để xóa bất kỳ thời gian nào
+// Supabase needs an ISO date string. However, that string will be different on every render because the MS or SEC have changed, which isn't good. So we use this trick to remove any time
 export const getToday = function (options = {}) {
   const today = new Date();
 
-  // Điều này là cần thiết để so sánh với created_at từ Supabase, vì nó không phải là 0.0.0.0, do đó chúng ta cần đặt ngày là END của ngày khi chúng ta so sánh với những ngày trước đó
+  // This is necessary to compare with created_at from Supabase, because it it not at 0.0.0.0, so we need to set the date to be END of the day when we compare it with earlier dates
   if (options?.end)
-    // Đặt ở giây cuối cùng của ngày
+    // Set to the last second of the day
     today.setUTCHours(23, 59, 59, 999);
   else today.setUTCHours(0, 0, 0, 0);
   return today.toISOString();

@@ -1,12 +1,12 @@
-import styled from 'styled-components';
-import { useState } from 'react';
-
-import CreateCabinForm from './CreateCabinForm';
-import { useDeleteCabin } from './useDeleteCabin';
-import { formatCurrency } from '../../utils/helpers';
-import { HiPencil, HiSquare2Stack, HiTrash } from 'react-icons/hi2';
-import { useCreateCabin } from './useCreateCabin';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
+import { formatCurrency } from '../../utils/helpers';
+import CreateCabinForm from './CreateCabinForm';
+
+import { useState } from 'react';
+import { useDeleteCabin } from './useDeleteCabin';
+import { useCreateCabin } from './useCreateCabin';
+import { HiPencil, HiSquare3Stack3D, HiTrash } from 'react-icons/hi2';
 
 const TableRow = styled.div`
   display: grid;
@@ -48,36 +48,28 @@ const Discount = styled.div`
 `;
 
 const Button = styled.button`
-  font-size: 1.6rem;
-  color: var(--color-grey-0);
-  padding: 0.3rem 0.4rem;
   border: none;
+  font-size: 2rem;
+  color: var(--color-grey-0);
   background-color: var(--color-brand-600);
+  padding: 0.3rem 0.3rem;
   border-radius: var(--border-radius-sm);
-
-  &:hover {
-    transform: translateY(-3px);
-  }
-
-  &:active {
-    transform: translateY(-1px);
-  }
 `;
 
-const Square = styled.div`
+const Box = styled.div`
   display: flex;
+  flex-direction: row;
+  gap: 1.2rem;
   align-items: center;
   justify-content: center;
-  gap: 1.2rem;
 `;
-
 function CabinRow({ cabin }) {
   const [showForm, setShowForm] = useState(false);
   const { isDeleting, deleteCabin } = useDeleteCabin();
   const { isCreating, createCabin } = useCreateCabin();
 
   const {
-    id: cabinId,
+    id: cabinID,
     name,
     maxCapacity,
     regularPrice,
@@ -88,7 +80,7 @@ function CabinRow({ cabin }) {
 
   function handleDuplicate() {
     createCabin({
-      name: `Copy of ${name}`,
+      name: `copy of ${name}`,
       maxCapacity,
       regularPrice,
       discount,
@@ -99,27 +91,27 @@ function CabinRow({ cabin }) {
 
   return (
     <>
-      <TableRow role='row'>
+      <TableRow>
         <Img src={image} />
         <Cabin>{name}</Cabin>
-        <div>Fits up to {maxCapacity} guests</div>
+        <div>Fit up to {maxCapacity} guests</div>
         <Price>{formatCurrency(regularPrice)}</Price>
         {discount ? (
           <Discount>{formatCurrency(discount)}</Discount>
         ) : (
           <span>&mdash;</span>
         )}
-        <Square>
-          <Button disabled={isCreating} onClick={handleDuplicate}>
-            <HiSquare2Stack />
+        <Box>
+          <Button onClick={handleDuplicate} disabled={isCreating}>
+            <HiSquare3Stack3D />
           </Button>
           <Button onClick={() => setShowForm((show) => !show)}>
             <HiPencil />
           </Button>
-          <Button onClick={() => deleteCabin(cabinId)} disabled={isDeleting}>
+          <Button onClick={() => deleteCabin(cabinID)} disabled={isDeleting}>
             <HiTrash />
           </Button>
-        </Square>
+        </Box>
       </TableRow>
       {showForm && <CreateCabinForm cabinToEdit={cabin} />}
     </>
@@ -128,13 +120,13 @@ function CabinRow({ cabin }) {
 
 CabinRow.propTypes = {
   cabin: PropTypes.shape({
-    id: PropTypes.number,
-    name: PropTypes.string,
-    maxCapacity: PropTypes.number,
-    regularPrice: PropTypes.number,
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    maxCapacity: PropTypes.number.isRequired,
+    regularPrice: PropTypes.number.isRequired,
     discount: PropTypes.number,
-    image: PropTypes.string,
     description: PropTypes.string,
+    image: PropTypes.string,
   }).isRequired,
 };
 

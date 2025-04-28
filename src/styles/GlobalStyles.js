@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle } from "styled-components";
 
 const GlobalStyles = createGlobalStyle`
 :root {
@@ -51,7 +51,7 @@ const GlobalStyles = createGlobalStyle`
   --border-radius-md: 7px;
   --border-radius-lg: 9px;
 
-  /* Chế độ tối */
+  /* For dark mode */
   --image-grayscale: 0;
   --image-opacity: 100%;
 }
@@ -63,7 +63,7 @@ const GlobalStyles = createGlobalStyle`
   padding: 0;
   margin: 0;
 
-  /* Tạo hoạt ảnh cho chế độ tối */
+  /* Creating animations for dark mode */
   transition: background-color 0.3s, border 0.3s;
 }
 
@@ -72,7 +72,7 @@ html {
 }
 
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   color: var(--color-grey-700);
 
   transition: color 0.3s, background-color 0.3s;
@@ -111,7 +111,7 @@ select:focus {
   outline-offset: -1px;
 }
 
-/* Bộ chọn cha mẹ, cuối cùng */
+/* Parent selector, finally 😃 */
 button:has(svg) {
   line-height: 0;
 }
@@ -142,6 +142,7 @@ img {
   /* For dark mode */
   filter: grayscale(var(--image-grayscale)) opacity(var(--image-opacity));
 }
+
 `;
 
 export default GlobalStyles;
