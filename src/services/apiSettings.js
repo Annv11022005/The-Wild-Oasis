@@ -1,27 +1,26 @@
-import supabase from "./supabase";
+import supabase from './supabase';
 
 export async function getSettings() {
-  const { data, error } = await supabase.from("settings").select("*").single();
-
+  let { data, error } = await supabase.from('settings').select('*').single();
   if (error) {
     console.error(error);
-    throw new Error("Settings could not be loaded");
+    throw new Error('Settings could not be loaded');
   }
   return data;
 }
 
-// We expect a newSetting object that looks like {setting: newValue}
+// Chúng tôi mong đợi một đối tượng newSetting trông giống như {setting: newValue}
 export async function updateSetting(newSetting) {
   const { data, error } = await supabase
-    .from("settings")
+    .from('settings')
     .update(newSetting)
-    // There is only ONE row of settings, and it has the ID=1, and so this is the updated one
-    .eq("id", 1)
+    // Chỉ có MỘT hàng cài đặt và nó có ID=1, vì vậy đây là hàng đã cập nhật
+    .eq('id', 1)
     .single();
 
   if (error) {
     console.error(error);
-    throw new Error("Settings could not be updated");
+    throw new Error('Settings could not be updated');
   }
   return data;
 }
