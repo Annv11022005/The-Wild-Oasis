@@ -1,6 +1,7 @@
-import styled from "styled-components";
-import Button from "./Button";
-import Heading from "./Heading";
+import styled from 'styled-components';
+import Button from './Button';
+import Heading from './Heading';
+import PropTypes from 'prop-types';
 
 const StyledConfirmDelete = styled.div`
   width: 40rem;
@@ -20,31 +21,34 @@ const StyledConfirmDelete = styled.div`
   }
 `;
 
-function ConfirmDelete({ resource, onConfirm, disabled, closeModal }) {
-  function handleConfirmClick() {}
+function ConfirmDelete({ resourceName, onConfirm, disabled, onCloseModal }) {
+  // function handleConfirmClick() {}
 
   return (
     <StyledConfirmDelete>
-      <Heading type="h3">Delete {resource}</Heading>
+      <Heading type='h3'>Xoá {resourceName}</Heading>
       <p>
-        Are you sure you want to delete this {resource} permanently? This action
-        cannot be undone.
+        Bạn có chắc chắn muốn xoá {resourceName} này vĩnh viễn không? Hành động
+        này không thể hoàn tác!
       </p>
 
       <div>
-        <Button variation="secondary" onClick={closeModal}>
-          Cancel
+        <Button variation='secondary' onClick={onCloseModal}>
+          Huỷ
         </Button>
-        <Button
-          variation="danger"
-          onClick={handleConfirmClick}
-          disabled={disabled}
-        >
-          Delete
+        <Button variation='danger' onClick={onConfirm} disabled={disabled}>
+          Xoá
         </Button>
       </div>
     </StyledConfirmDelete>
   );
 }
+
+ConfirmDelete.propTypes = {
+  resourceName: PropTypes.string.isRequired,
+  onConfirm: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
+  onCloseModal: PropTypes.func.isRequired,
+};
 
 export default ConfirmDelete;

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 const StyledMenu = styled.div`
   display: flex;
@@ -60,3 +60,7 @@ const StyledButton = styled.button`
     transition: all 0.3s;
   }
 `;
+
+function Menus({ children }) {}
+
+export default Menus;
