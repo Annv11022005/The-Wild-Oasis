@@ -1,11 +1,11 @@
+import supabase from '../services/supabase';
+import { Cabins } from './data-cabins';
+import { guests } from './data-guests';
+import { bookings } from './data-bookings';
 import { isFuture, isPast, isToday } from 'date-fns';
 import { useState } from 'react';
-import supabase from 'services/supabase';
-import Button from 'ui/Button';
-import { subtractDates } from 'utils/helpers';
-import { bookings } from './data-bookings';
-import { cabins } from './data-cabins';
-import { guests } from './data-guests';
+import Button from '../ui/Button';
+import { subtractDates } from '../utils/helpers';
 
 // const originalSettings = {
 //   minBookingLength: 3,
@@ -20,7 +20,7 @@ async function deleteGuests() {
 }
 
 async function deleteCabins() {
-  const { error } = await supabase.from('cabins').delete().gt('id', 0);
+  const { error } = await supabase.from('Cabins').delete().gt('id', 0);
   if (error) console.log(error.message);
 }
 
@@ -35,31 +35,29 @@ async function createGuests() {
 }
 
 async function createCabins() {
-  const { error } = await supabase.from('cabins').insert(cabins);
+  const { error } = await supabase.from('Cabins').insert(Cabins);
   if (error) console.log(error.message);
 }
 
 async function createBookings() {
-  // Bookings need a guestId and a cabinId. We can't tell Supabase IDs for each object, it will calculate them on its own. So it might be different for different people, especially after multiple uploads. Therefore, we need to first get all guestIds and cabinIds, and then replace the original IDs in the booking data with the actual ones from the DB
   const { data: guestsIds } = await supabase
     .from('guests')
     .select('id')
     .order('id');
   const allGuestIds = guestsIds.map((cabin) => cabin.id);
   const { data: cabinsIds } = await supabase
-    .from('cabins')
+    .from('Cabins')
     .select('id')
     .order('id');
   const allCabinIds = cabinsIds.map((cabin) => cabin.id);
 
   const finalBookings = bookings.map((booking) => {
-    // Here relying on the order of cabins, as they don't have and ID yet
-    const cabin = cabins.at(booking.cabinId - 1);
+    const cabin = Cabins.at(booking.cabinId - 1);
     const numNights = subtractDates(booking.endDate, booking.startDate);
     const cabinPrice = numNights * (cabin.regularPrice - cabin.discount);
     const extrasPrice = booking.hasBreakfast
       ? numNights * 15 * booking.numGuests
-      : 0; // hardcoded breakfast price
+      : 0;
     const totalPrice = cabinPrice + extrasPrice;
 
     let status;
@@ -104,12 +102,11 @@ export function Uploader() {
 
   async function uploadAll() {
     setIsLoading(true);
-    // Bookings need to be deleted FIRST
+
     await deleteBookings();
     await deleteGuests();
     await deleteCabins();
 
-    // Bookings need to be created LAST
     await createGuests();
     await createCabins();
     await createBookings();
@@ -138,21 +135,16 @@ export function Uploader() {
 
       <Button
         onClick={uploadAll}
-        // To prevent accidental clicks. Remove to run once!
         disabled={isLoading}
         // disabled={true}
       >
-        Upload ALL sample data
+        Upload ALL
       </Button>
-      <p>Only run this only once!</p>
-      <p>
-        <em>(Cabin images need to be uploaded manually)</em>
-      </p>
+
       <hr />
       <Button onClick={uploadBookings} disabled={isLoading}>
         Upload CURRENT bookings
       </Button>
-      <p>You can run this every day you develop the app</p>
     </div>
   );
 }

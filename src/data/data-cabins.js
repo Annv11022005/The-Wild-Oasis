@@ -1,10 +1,12 @@
-const { supabaseUrl } = require('services/supabase');
+// const { supabaseUrl } = require('services/supabase');
+import { supabaseUrl } from '../services/supabase';
+
 const imageUrl = `${supabaseUrl}/storage/v1/object/public/cabin-images/`;
 
 // Book now and experience luxury in nature.
 // Book now and elevate your group or family getaway to new heights of luxury.
 
-export const cabins = [
+export const Cabins = [
   {
     name: '001',
     maxCapacity: 2,
