@@ -1,12 +1,24 @@
+import PropTypes from 'prop-types';
 import { getToday } from '../utils/helpers';
 import supabase from './supabase';
 
-export async function getBookings() {
-  const { data, error } = await supabase
+export async function getBookings({ filter, sortBy }) {
+  let query = supabase
     .from('bookings')
     .select(
       'id, created_at, startDate, endDate, numNights, numGuests, status, totalPrice , Cabins(name), guests(fullName, email)'
     );
+
+  // 1) FILTER
+  if (filter) query = query.eq(filter.field, filter.value);
+
+  // 2) SORTBY
+  if (sortBy)
+    query = query.order(sortBy.field, {
+      ascending: sortBy.direction === 'asc',
+    });
+
+  const { data, error } = await query;
 
   if (error) {
     console.error(error);
@@ -15,6 +27,14 @@ export async function getBookings() {
 
   return data;
 }
+
+getBookings.PropTypes = {
+  filter: PropTypes.shape({
+    field: PropTypes.string,
+    value: PropTypes.string,
+  }),
+  sortBy: PropTypes.string,
+};
 
 export async function getBooking(id) {
   const { data, error } = await supabase
