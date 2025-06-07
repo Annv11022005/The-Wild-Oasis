@@ -28,7 +28,7 @@ export async function getBookings({ filter, sortBy }) {
   return data;
 }
 
-getBookings.PropTypes = {
+getBookings.propTypes = {
   filter: PropTypes.shape({
     field: PropTypes.string,
     value: PropTypes.string,
