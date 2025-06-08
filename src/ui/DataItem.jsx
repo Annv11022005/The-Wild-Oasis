@@ -34,7 +34,7 @@ function DataItem({ icon, label, children }) {
 }
 
 DataItem.propTypes = {
-  icon: PropTypes.string,
+  icon: PropTypes.node,
   label: PropTypes.string,
   children: PropTypes.node,
 };

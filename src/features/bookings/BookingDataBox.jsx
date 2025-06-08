@@ -192,7 +192,7 @@ BookingDataBox.propTypes = {
     startDate: PropTypes.string,
     endDate: PropTypes.string,
     numNights: PropTypes.number,
-    numGuests: PropTypes.string,
+    numGuests: PropTypes.number,
     totalPrice: PropTypes.number,
     status: PropTypes.string,
     cabinPrice: PropTypes.number,
@@ -208,7 +208,7 @@ BookingDataBox.propTypes = {
       nationalID: PropTypes.string,
     }),
     Cabins: PropTypes.shape({
-      name: PropTypes.number,
+      name: PropTypes.string,
     }),
   }).isRequired,
 };
