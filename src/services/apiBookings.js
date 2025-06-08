@@ -1,12 +1,14 @@
 import PropTypes from 'prop-types';
 import { getToday } from '../utils/helpers';
 import supabase from './supabase';
+import { PAGE_SIZE } from '../utils/constants';
 
-export async function getBookings({ filter, sortBy }) {
+export async function getBookings({ filter, sortBy, page }) {
   let query = supabase
     .from('bookings')
     .select(
-      'id, created_at, startDate, endDate, numNights, numGuests, status, totalPrice , Cabins(name), guests(fullName, email)'
+      'id, created_at, startDate, endDate, numNights, numGuests, status, totalPrice , Cabins(name), guests(fullName, email)',
+      { count: 'exact' }
     );
 
   // 1) FILTER
@@ -18,14 +20,22 @@ export async function getBookings({ filter, sortBy }) {
       ascending: sortBy.direction === 'asc',
     });
 
-  const { data, error } = await query;
+  // 3) PAGINATION
+  if (page) {
+    const from = (page - 1) * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
+
+    query = query.range(from, to);
+  }
+
+  const { data, error, count } = await query;
 
   if (error) {
     console.error(error);
     throw new Error('Bookings could not be loaded');
   }
 
-  return data;
+  return { data, count };
 }
 
 getBookings.propTypes = {
@@ -34,6 +44,7 @@ getBookings.propTypes = {
     value: PropTypes.string,
   }),
   sortBy: PropTypes.string,
+  page: PropTypes.string,
 };
 
 export async function getBooking(id) {
