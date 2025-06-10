@@ -1,15 +1,24 @@
 import styled from 'styled-components';
 import { format, isToday } from 'date-fns';
+import {
+  HiArrowDownOnSquare,
+  HiArrowUpOnSquare,
+  HiEye,
+  HiTrash,
+} from 'react-icons/hi2';
+import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 
 import Tag from '../../ui/Tag';
 import Table from '../../ui/Table';
+import ConfirmDelete from '../../ui/ConfirmDelete';
+import Modal from '../../ui/Modal';
+import Menus from '../../ui/Menus';
 
 import { formatCurrency } from '../../utils/helpers';
 import { formatDistanceFromNow } from '../../utils/helpers';
-import PropTypes from 'prop-types';
-import Menus from '../../ui/Menus';
-import { HiArrowDownOnSquare, HiEye } from 'react-icons/hi2';
-import { useNavigate } from 'react-router-dom';
+import { useCheckout } from '../check-in-out/useCheckout';
+import { useDeleteBooking } from './useDeleteBooking';
 
 const Cabin = styled.div`
   font-size: 1.6rem;
@@ -52,9 +61,11 @@ function BookingRow({
     Cabins: { name: cabinName },
   },
 }) {
-  console.log({ bookingId, created_at, numGuests });
+  const nagigate = useNavigate();
+  const { checkout, isCheckingOut } = useCheckout();
+  const { isDeleting, deleteBooking } = useDeleteBooking();
 
-  const nagigate = useNavigate;
+  console.log({ bookingId, created_at, numGuests });
 
   const statusToTagName = {
     unconfirmed: 'blue',
@@ -87,27 +98,49 @@ function BookingRow({
       <Tag type={statusToTagName[status]}>{status.replace('-', ' ')}</Tag>
 
       <Amount>{formatCurrency(totalPrice)}</Amount>
-
-      <Menus.Menu>
-        <Menus.Toggle id={bookingId} />
-        <Menus.List id={bookingId}>
-          <Menus.Button
-            icon={<HiEye />}
-            onClick={() => nagigate(`/bookings/${bookingId}`)}
-          >
-            See details
-          </Menus.Button>
-
-          {status === 'unconfirmed' && (
+      <Modal opens={true}>
+        <Menus.Menu>
+          <Menus.Toggle id={bookingId} />
+          <Menus.List id={bookingId}>
             <Menus.Button
-              icon={<HiArrowDownOnSquare />}
-              onClick={() => nagigate(`/checkin/${bookingId}`)}
+              icon={<HiEye />}
+              onClick={() => nagigate(`/bookings/${bookingId}`)}
             >
-              Check in
+              See details
             </Menus.Button>
-          )}
-        </Menus.List>
-      </Menus.Menu>
+
+            {status === 'unconfirmed' && (
+              <Menus.Button
+                icon={<HiArrowDownOnSquare />}
+                onClick={() => nagigate(`/checkin/${bookingId}`)}
+              >
+                Check in
+              </Menus.Button>
+            )}
+
+            {status === 'checked-in' && (
+              <Menus.Button
+                icon={<HiArrowUpOnSquare />}
+                onClick={() => checkout(bookingId)}
+                disable={isCheckingOut}
+              >
+                Check out
+              </Menus.Button>
+            )}
+            <Modal.Open>
+              <Menus.Button icon={<HiTrash />}>Delete booking</Menus.Button>
+            </Modal.Open>
+          </Menus.List>
+        </Menus.Menu>
+
+        <Modal.Window>
+          <ConfirmDelete
+            resourceName='Booking'
+            onConfirm={() => deleteBooking(bookingId)}
+            disable={isDeleting}
+          />
+        </Modal.Window>
+      </Modal>
     </Table.Row>
   );
 }
@@ -119,7 +152,7 @@ BookingRow.propTypes = {
     startDate: PropTypes.string,
     endDate: PropTypes.string,
     numNights: PropTypes.number,
-    numGuests: PropTypes.string,
+    numGuests: PropTypes.number,
     totalPrice: PropTypes.number,
     status: PropTypes.string,
     guests: PropTypes.shape({
@@ -127,7 +160,7 @@ BookingRow.propTypes = {
       email: PropTypes.string,
     }),
     Cabins: PropTypes.shape({
-      name: PropTypes.number,
+      name: PropTypes.string,
     }),
   }).isRequired,
 };
