@@ -12,10 +12,18 @@ function LoginForm() {
   const { login, isLoading } = useLogin();
 
   function handleSubmit(e) {
-    e.prevenDefault();
+    e.preventDefault();
     if (!email || !password) return;
 
-    login({ email, password });
+    login(
+      { email, password },
+      {
+        onSettled: () => {
+          setEmail('');
+          setPassword('');
+        },
+      }
+    );
   }
 
   return (
